@@ -1,80 +1,215 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang = "en">
 <head>
-    <meta charset="utf-8">
-    <title>Hello! Wow!</title>
-    <script src="js/phaser.js"></script>
-    <script src="js/main.js"></script>
-
-<style>
-body
+    <meta charset="UTF-8">
+    <title>The Growing Tree</title>
+    <script type= "text/javascript" src="phaser.min.js"></script>
+<style type="text/css">
 {
     color: #777;
     font-family: "Avenir", Verdana, sans-serif;
 }
 #readme
 {
+    margin: 0;
     margin-top: 10px;
 }
 </style>
-
 </head>
 <body>
-<div id="game"></div>
+    
+<div id="game">
+<script type = "text/javascript">
+var game = new Phaser.Game(400, 600, Phaser.AUTO,'game', {preload: preload, create: create, update: update}); //add update later
+
+var text;
+var text2;
+var text3;
+var sound;
+var blink;
+var background;
+var counter = 0;
+var notJustOneLeft = 0;
+var notJustOneRight = 0;
+var total = 0;
+var text4;
+var timer;
+var finish = false;
+var retry = false;
+    
+function preload() {
+    game.load.image("BackGround", "BackGroundComrade.png");
+    game.load.image("grownTree","TheGrowingTree.png")
+    game.load.image("seed", "Seed.png");
+    game.load.image("grow","growSeed.png");
+    game.load.image("sprout","SproutComrade.png");
+    game.load.image("neartree","NearFinalTreeComrade.png");
+    game.load.image("final","FinalTreeComrade.png");
+    game.load.image("apple","AppleComrade.png");
+    game.load.image("bar","Barrier.png");
+    game.load.audio("g","GrowingSound.ogg");
+    game.load.audio("comrade","USSR_Russia_Anthem_instr.ogg");
+}
+function create() {
+    blink = game.add.audio("g");
+    background = game.add.sprite(0, 0, "BackGround");
+    seedGrow = game.add.sprite(10,25,"seed");
+    seedGrow.enableBody = true;
+    seedGrow.physicsBodyType = Phaser.Physics.ARCADE;
+    sound = game.add.audio("comrade");
+    sound.play();
+    var style = { font: "italic 25px Arial", fill: "#FF0000", align: "center" }
+    text = game.add.text(0,0,"Welcome, to the Growing tree\n", style);
+    text2 = game.add.text(100,300,"*Click to start*", style);
+    text3 = game.add.text(50,50,"",style);
+    text4 = game.add.text(50,100, "", style);
+    
+    timer = game.time.create(false);
+    timer.loop(7000, updateC, this);
+}
+function updateC() {
+    total += 1;
+}
+function update() {
+    cursor = game.input.keyboard.createCursorKeys();
+    if ((counter === 100) && (finish === false)) {
+        text4.setText("");
+        text3.setText("Good, Comrade! Keep it up!\n");
+        seedGrow.loadTexture("neartree");
+        blink.play();
+    }
+    if ((counter === 150) && (finish === false)) {
+        text4.setText("");
+        text3.setText("Almost there, Comrade!\n Just one more stage!\n");
+        seedGrow.loadTexture("final");
+        blink.play();
+    }
+    if (counter > 200) {
+        text4.setText("");
+        text3.setText("You did it, Comrade!\n You built the tree!\n Now you're the winner!");
+        seedGrow.loadTexture("grownTree");
+        blink.play();
+        finish = true;
+    }
+    if (((total === 2) && (counter < 75)) && (finish === false)) {
+        text3.setText("");
+        text4.setText("Careful, comrade!\n The timer's catching up!");
+    }
+    if (((total === 2) && (counter < 75)) && (finish === false)) {
+        text3.setText("");
+        text4.setText("Hurry! Before the everyone\n takes your hard work!");
+    }
+    if ((game.input.activePointer.isDown) && (counter === 0)) {
+        seedGrow.loadTexture("grow");
+        text2.destroy();
+        text.setText("Your main objective is to protect\n the tree and help it grow!\n\n\n\n\nUse Right\left\nDon't use both at the same time\n Don't run out of time\nDon't spam just one\n*Press Left or Right to continue*");
+    }
+    if ((((cursor.left.isDown === true) || (cursor.right.isDown === true)) && (counter === 0)) && (finish === false)) {
+        text.destroy();
+        seedGrow.loadTexture("sprout");
+        timer.start();
+        counter += 1;
+    }
+    else if (((notJustOneLeft === 10) || (notJustOneRight === 10)) && (finish === false)){
+        text3.setText("Oops, you hit one\n too many times! Score will be\n reset. Don't worry, no\n u can do it! Just try again!");
+        notJustOneLeft = 0;
+        notJustOneRight = 0;
+        text4.setText("");
+        timer.start();
+        counter = 0;
+        retry = true;
+    }
+    else if (((cursor.right.isDown) && (cursor.left.isDown)) && (finish === false)) {
+        text3.setText("Oops, you hit both!\n Score will be reset\nDon't worry, just try again!");
+        text4.setText("");
+        timer.start();
+        counter = 0;
+        retry = true;
+    }
+    else if (((cursor.left.isDown) && (counter > 0)) && (finish === false)) {
+        counter += 1;
+        notJustOneRight = 0;
+        if (retry === true) {
+            text3.setText("");
+            retry = false;
+        }
+        notJustOneLeft += 1;
+        
+    }
+    else if (((cursor.right.isDown) && (counter > 0)) && (finish === false)) {
+        counter += 1;
+        notJustOneLeft = 0;
+        if (retry === true) {
+            text3.setText("");
+            retry = false;
+        }
+        notJustOneRight += 1;
+    }
+}
+
+</script>
+</div>
+
 <div id="readme">
-<h2>Your game title</h2>
+<h2>The Growing Tree</h2>
 <ul>
 
 <li><strong>High Concept:</strong>
-A one-sentence summary of your game.
+Defend your tree so that way it can grow up to become big and strong!
 </li>
 
 <li><strong>Player Experience Goals:</strong>
-What experience do you want players to have when playing your game?
+In this game, one or two players take control. If two players, one is on the left side of the tree, the other against the right side of the tree. If it's only one player, then that player controls both sides. The goal is to finish the tree's growth until the timer goes off, or you mismatch the left and right buttons!
 </li>
 
 <li><strong>Genre:</strong>
-A single sentence that places the game within a game genre or a hybrid of genres.
+It's a casual, solo/cooperative game about the values of friendship and growing up to love a good challenge.
 </li>
 
 <li><strong>Game play:</strong>
-A paragraph describing the actions the player can perform, the system dynamics, and the core mechanic. Include a concise explanation of the prototype’s inputs and their expected effects (how to play). You can also describe game play that is not in the prototype. You may include mock-up images for parts of the game not in the prototype.
+The player mostly controls the action by hitting left and right. The more the player hits those keys, the more the tree grows! However, at the same time, if the timer goes out or you hit one key too many times, you have to start all over again! To win, the best way to go is to alternate the keys fast enough so you can help finish your tree!
 </li>
 
 <li><strong>Prototype goal:</strong>
-What game mechanic is this prototype evaluating?
+The central goal is to finish your tree.
 </li>
 
 <li><strong>Features:</strong>
-What are the unique aspects of your game that set it apart?
+It features some tense action that should be easy enough for a four year to do, but challenging enough to make them feel as though it's difficult to keep track.
 </li>
 
 <li><strong>Setting/Premise:</strong>
-A paragraph about the world your game is set in and who the characters are. What makes the game world and its occupants unique and interesting? Do the tokens represent something? If the game has a backstory, put it here. If the game is abstract, then say so.
-</li>
-
-<li><strong>Story:</strong>
-If the game has a story, summarize it in a paragraph. How will the dramatic tension interact with the gameplay tension?
+The main world hub is just your backyard. You're a normal person, trying to allow this tree to grow to it's max potential, but people keep tearing your tree down, so you have to build it back up! It isn't until the tree gets to it's full potential that everyone benefits due to the fruit it produces, but you have to stimulate it's growth so that way you can help out your community. However, you, the planter, must first finish it within your time schedule, and keep at it!
 </li>
 
 <li><strong>Target Audience:</strong>
-A single sentence that describes the demographic you're trying to reach.
+I want to reach primarily young, impressionable four-year-olds who are interested in learning about how trees grow, but also about how to deal with frustration. This may be their first introduction to a challenge, therefore we want to educate them as to how hard work and determination can bring out the most satisfactory experience for those playing.
 </li>
 
 <li><strong>Play time:</strong>
-How long does your game take to play?
+My game should take about a five-seven minutes, give or take.
 </li>
 
 <li><strong>Strategies:</strong>
-What player strategies do you expect will be effective at playing this game?
+Just try to build up the tree as much as you can. If you get stuck, take a break for a bit, and then get back to it. The game is meant to be pretty frustrating, but it's supposed to be that way in a sense. I wanted to make a game that makes you feel as though the task you're doing is impossible, up until the moment where you get out of that situation. I wanted my audience to know that giving up is no way to succeed, and that if they perservere hard enough, that anything is possible, because it's a hard lesson that I had to learn as a kid as well.
 </li>
 
 <li><strong>Prototype Assets:</strong>
-Did you make your prototype assets from scratch? Did you borrow them? Cite your sources here.
+The majority of the assets that I made were made from scratch with the small amount of time I had, but I did use some of the code from the "part9" and some other code from the timers section of phaser to get a better grasp of what I was doing. As for sound, I used the USSR's national anthem, and 
+    
+Sources: http://phaser.io/tutorials/making-your-first-phaser-game/part3; http://phaser.io/docs/2.4.4/Phaser.Text.html; http://phaser.io/examples/v2/input/mouse-buttons; http://phaser.io/examples/v2/text/text-events; http://phaser.io/examples/v2/text/remove-text;
+http://phaser.io/docs/2.3.0/Phaser.Component.LoadTexture.html;
+?d=text&f=update+text.js&t=update%20text;
+http://phaser.io/examples/v2/text/center-text
+http://phaser.io/examples/v2/time/custom-timer
+http://phaser.io/examples/v2/arcade-physics/body-enable
+http://phaser.io/docs/2.4.4/Phaser.Timer.html
+http://www.html5gamedevs.com/topic/1870-in-game-timer/
+http://phaser.io/examples/v2/audio/loop
 </li>
 
 <li><strong>Prototype Closest Other Game:</strong>
-Which other game most closely resembles your game? If you are borrowing from a Phaser Example, you must say so here.
+It reminds me a lot of Asura, in regards to some of the button mashing that goes on as you try to beat the time requirement, but without a lot of the graphics of Asura. It's made to focus more of the fast-paced nature.
 </li>
 
 </ul>
