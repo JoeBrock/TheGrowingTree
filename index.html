@@ -78,31 +78,39 @@ function update() {
         seedGrow.loadTexture("neartree");
         blink.play();
     }
-    if ((counter === 150) && (finish === false)) {
+    if ((counter === 300) && (finish === false)) {
         text4.setText("");
         text3.setText("Almost there, Comrade!\n Just one more stage!\n");
         seedGrow.loadTexture("final");
         blink.play();
     }
-    if (counter > 200) {
+    if (counter > 400) {
         text4.setText("");
         text3.setText("You did it, Comrade!\n You built the tree!\n Now you're the winner!");
         seedGrow.loadTexture("grownTree");
         blink.play();
         finish = true;
     }
-    if (((total === 2) && (counter < 75)) && (finish === false)) {
+    if ((total === 1) && (finish === false)) {
         text3.setText("");
         text4.setText("Careful, comrade!\n The timer's catching up!");
     }
-    if (((total === 2) && (counter < 75)) && (finish === false)) {
+    if ((total === 2) && (finish === false)) {
         text3.setText("");
         text4.setText("Hurry! Before the everyone\n takes your hard work!");
+    }
+    if ((total === 3) && (finish === false)) {
+        seedGrow.loadTexture("sprout");
+        text3.setText("");
+        text4.setText("Aw, everyone took your work!\n But don't give up!\n Try again!\n");
+        counter += 1;
+        total = 0;
+        timer.start();
     }
     if ((game.input.activePointer.isDown) && (counter === 0)) {
         seedGrow.loadTexture("grow");
         text2.destroy();
-        text.setText("Your main objective is to protect\n the tree and help it grow!\n\n\n\n\nUse Right\left\nDon't use both at the same time\n Don't run out of time\nDon't spam just one\n*Press Left or Right to continue*");
+        text.setText("Your main objective is to protect\n the tree and help it grow!\n\n\n\n\nUse Right or left\nDon't use both at the same time\n Don't run out of time\nDon't spam just one\n*Press Left or Right to continue*");
     }
     if ((((cursor.left.isDown === true) || (cursor.right.isDown === true)) && (counter === 0)) && (finish === false)) {
         text.destroy();
@@ -111,6 +119,7 @@ function update() {
         counter += 1;
     }
     else if (((notJustOneLeft === 10) || (notJustOneRight === 10)) && (finish === false)){
+        seedGrow.loadTexture("sprout");
         text3.setText("Oops, you hit one\n too many times! Score will be\n reset. Don't worry, no\n u can do it! Just try again!");
         notJustOneLeft = 0;
         notJustOneRight = 0;
@@ -120,6 +129,7 @@ function update() {
         retry = true;
     }
     else if (((cursor.right.isDown) && (cursor.left.isDown)) && (finish === false)) {
+        seedGrow.loadTexture("sprout");
         text3.setText("Oops, you hit both!\n Score will be reset\nDon't worry, just try again!");
         text4.setText("");
         timer.start();
@@ -206,6 +216,7 @@ http://phaser.io/examples/v2/arcade-physics/body-enable
 http://phaser.io/docs/2.4.4/Phaser.Timer.html
 http://www.html5gamedevs.com/topic/1870-in-game-timer/
 http://phaser.io/examples/v2/audio/loop
+https://en.wikipedia.org/wiki/File:Soviet_Anthem_Instrumental_1955.ogg
 </li>
 
 <li><strong>Prototype Closest Other Game:</strong>
